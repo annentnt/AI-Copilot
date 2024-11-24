@@ -1,28 +1,29 @@
 import os
+import csv
+import openai
+from flask import Flask, render_template, request, flash, redirect, url_for
+from dotenv import load_dotenv
+from flask_bootstrap import Bootstrap
+from form.InputPromptForm import InputPromptForm
 
-try:
-    import openai
-    from flask import Flask, render_template, request, Markup
-    from dotenv import load_dotenv, set_key, find_dotenv
-    from flask_bootstrap import Bootstrap
-    from form.InputPromptForm import InputPromptForm
-except Exception:
-    os.system("pip install -r requirements.txt")
+# Load biến môi trường từ file .env
+load_dotenv()
 
-    import openai
-    from flask import Flask, render_template, request, Markup
-    from dotenv import load_dotenv, set_key, find_dotenv
-    from flask_bootstrap import Bootstrap
-    from form.InputPromptForm import InputPromptForm
-
+# Khởi tạo Flask
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Khóa bí mật cho thông báo Flash
+app.secret_key = os.getenv("SECRET_KEY")  # Khóa bí mật cho Flash
 
 # Đường dẫn file lưu thông tin người dùng
 file_path = "user.csv"
 
-# Đặt API Key của OpenAI
-openai.api_key = "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"
+# Cấu hình OpenAI API
+openai.api_key = os.getenv("API_KEY")
+model_engine = os.getenv("MODEL_ENGINE")
+max_tokens = int(os.getenv("MAX_TOKENS"))
+temperature = float(os.getenv("TEMPERATURE"))
+top_p = float(os.getenv("TOP_P"))
+frequency_penalty = float(os.getenv("FREQUENCY_PENALTY"))
+presence_penalty = float(os.getenv("PRESENCE_PENALTY"))
 
 # ---- XỬ LÝ LOGIN/SIGNUP ----
 
@@ -90,6 +91,11 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        confirm_password = request.form['confirm_password']  # Xác nhận mật khẩu
+        if password != confirm_password:
+            flash("Mật khẩu xác nhận không khớp. Vui lòng thử lại.", "danger")
+            return render_template('register.html')
+
         if register_new_user(username, password):
             flash("Đăng ký thành công! Bạn có thể đăng nhập.", "success")
             return redirect(url_for('login'))
@@ -103,13 +109,16 @@ def register():
 def chat():
     if request.method == 'POST':
         user_input = request.form['user_input']
-        model = request.form.get('model', 'gpt-3.5')  # Mặc định là GPT-3.5
         try:
             # Gọi OpenAI API
             response = openai.Completion.create(
-                engine=model,
+                engine=model_engine,
                 prompt=user_input,
-                max_tokens=100
+                max_tokens=max_tokens,
+                temperature=temperature,
+                top_p=top_p,
+                frequency_penalty=frequency_penalty,
+                presence_penalty=presence_penalty,
             )
             bot_response = response.choices[0].text.strip()
             return render_template('chat.html', user_input=user_input, bot_response=bot_response)
@@ -118,4 +127,5 @@ def chat():
     return render_template('chat.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.getenv("PORT", 5000))  # Mặc định dùng cổng 5000 nếu không có PORT trong .env
+    app.run(debug=True, port=port)
