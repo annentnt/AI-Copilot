@@ -1,7 +1,19 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, jsonify
-import openai
-import csv
 import os
+
+try:
+    import openai
+    from flask import Flask, render_template, request, Markup
+    from dotenv import load_dotenv, set_key, find_dotenv
+    from flask_bootstrap import Bootstrap
+    from form.InputPromptForm import InputPromptForm
+except Exception:
+    os.system("pip install -r requirements.txt")
+
+    import openai
+    from flask import Flask, render_template, request, Markup
+    from dotenv import load_dotenv, set_key, find_dotenv
+    from flask_bootstrap import Bootstrap
+    from form.InputPromptForm import InputPromptForm
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Khóa bí mật cho thông báo Flash
