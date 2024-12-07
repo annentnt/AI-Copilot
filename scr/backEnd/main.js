@@ -1,10 +1,10 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const path = require('path');
-const session = require('express-session');
-const flash = require('connect-flash');
-const { OpenAIApi } = require('openai');  // Chỉ cần khai báo một lần
+import express from 'express';
+import bodyParser from 'body-parser';
+import fs from 'fs';
+import path from 'path';
+import session from 'express-session';
+import flash from 'connect-flash';
+import { OpenAIApi } from 'openai';  // Chỉ cần khai báo một lần
 
 const app = express();
 const filePath = path.join(__dirname, 'user.csv'); // Đường dẫn file CSV
@@ -41,7 +41,12 @@ const readUserCredentials = () => {
 };
 
 // Hàm đăng ký tài khoản mới
-const registerNewUser = (username, password) => {
+const registerNewUser = (username, password, confirmPassword) => {
+    if (password !== confirmPassword) {
+        console.error('Passwords do not match');
+        return false;
+    }
+
     try {
         const users = readUserCredentials();
         if (users.some(user => user.username === username)) {
@@ -58,7 +63,7 @@ const registerNewUser = (username, password) => {
 };
 
 // Route chính
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
     res.render('index');
 });
 
@@ -87,12 +92,12 @@ app.route('/register')
         res.render('register', { messages: req.flash() });
     })
     .post((req, res) => {
-        const { username, password } = req.body;
-        if (registerNewUser(username, password)) {
+        const { username, password, confirmPassword } = req.body;
+        if (registerNewUser(username, password, confirmPassword)) {
             req.flash('success', 'Đăng ký thành công! Bạn có thể đăng nhập.');
             res.redirect('/login');
         } else {
-            req.flash('danger', 'Tài khoản đã tồn tại.');
+            req.flash('danger', 'Tài khoản đã tồn tại hoặc mật khẩu không khớp.');
             res.redirect('/register');
         }
     });
