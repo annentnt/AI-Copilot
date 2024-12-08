@@ -4,12 +4,28 @@ import fs from 'fs';
 import path from 'path';
 import session from 'express-session';
 import flash from 'connect-flash';
-import { OpenAIApi } from 'openai';  // Chỉ cần khai báo một lần
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { OpenAIApi } from 'openai';
+import { Configuration } from 'openai/configuration';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const filePath = path.join(__dirname, 'user.csv'); // Đường dẫn file CSV
-const OPENAI_API_KEY = "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"; // Thay bằng API key của bạn
 
+if (!process.env.OPENAI_API_KEY) {
+    throw new Error('Missing OpenAI API key in environment variables');
+}
+
+const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY, // Thay bằng API key của bạn
+});
+
+const openai = new OpenAIApi(configuration);
 // Middleware
 app.set('view engine', 'ejs'); // Sử dụng EJS làm view engine
 app.use(express.static('public')); // Đường dẫn tĩnh (CSS, JS)
@@ -21,9 +37,6 @@ app.use(session({
 }));
 app.use(flash());
 
-const openai = new OpenAIApi({
-    apiKey: OPENAI_API_KEY,  // API key của bạn
-});
 
 // Hàm đọc thông tin tài khoản từ CSV
 const readUserCredentials = () => {
