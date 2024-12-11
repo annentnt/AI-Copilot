@@ -1,0 +1,32 @@
+project-root/
+│
+├── public/                     # Tài nguyên tĩnh
+│   ├── css/
+│   ├── js/
+│   ├── images/
+│
+├── views/                      # Giao diện HTML/template
+│   ├── login.html
+│   ├── dashboard.html
+│   ├── reset_password.html
+│   ├── verify_email.html
+│
+├── src/                        # Mã nguồn backend
+│   ├── routes/
+│   ├── controllers/
+│   ├── models/
+│   ├── services/
+│   ├── middlewares/
+│   ├── utils/
+│
+├── database/                   # Thư mục chứa cơ sở dữ liệu
+│   ├── migrations/             # File di trú cơ sở dữ liệu (cho schema DB)
+│   │   ├── 20231211-init.js    # File migration khởi tạo DB
+│   ├── seeders/                # File thêm dữ liệu mẫu vào DB
+│   │   ├── 20231211-sample.js  # Dữ liệu mẫu ban đầu
+│   ├── database.js             # Cấu hình kết nối database
+│
+├── server.js                   # Điểm khởi chạy chính của ứng dụng
+├── package.json                # Cấu hình dự án
+├── package-lock.json           # Khóa phiên bản dependencies
+└── .env                        # Biến môi trường
