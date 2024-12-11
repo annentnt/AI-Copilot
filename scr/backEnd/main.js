@@ -4,10 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import session from 'express-session';
 import flash from 'connect-flash';
-import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { OpenAIApi } from 'openai';
-import { Configuration } from 'openai/configuration';
+import { OpenAIApi, configuration } from 'openai';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
