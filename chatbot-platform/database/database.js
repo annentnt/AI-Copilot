@@ -1,31 +1,25 @@
-// database.js
 const sql = require('mssql');
 
 const config = {
-    user: 'username',
-    password: 'password',
-    server: 'localhost',
-    database: 'database',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    server: process.env.DB_SERVER, // Địa chỉ server
+    database: process.env.DB_NAME,
     options: {
-        encrypt: true,
-        trustServerCertificate: true
-    }
+        encrypt: true, // Bật nếu sử dụng Azure
+        trustServerCertificate: true, // Chỉ bật nếu phát triển cục bộ
+    },
 };
 
-const poolPromise = new sql.ConnectionPool(config)
-    .connect()
-    .then(pool => {
-        console.log('Connected to SQL Server');
+const connectDB = async () => {
+    try {
+        const pool = await sql.connect(config);
+        console.log('SQL Server connected');
         return pool;
-    })
-    .catch(err => {
-        console.error('Database Connection Failed! Bad Config: ', err);
-        throw err;
-    });
-
-module.exports = {
-    query: async (query) => {
-        const pool = await poolPromise;
-        return pool.request().query(query);
+    } catch (error) {
+        console.error(`Error connecting to SQL Server: ${error.message}`);
+        process.exit(1);
     }
 };
+
+module.exports = connectDB;

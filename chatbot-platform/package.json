@@ -10,6 +10,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.8.4",
+    "mssql": "^11.0.1",
     "sequelize": "^6.37.5",
     "tedious": "^18.6.1"
   },
