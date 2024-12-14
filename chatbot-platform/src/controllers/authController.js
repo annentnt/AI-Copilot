@@ -4,7 +4,11 @@ import connectDB from '../../database/database.js';
 
 const authController = {
     register: async (req, res) => {
-        const { username, password } = req.body;
+        const { username, password, confirmPassword } = req.body;
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({ message: 'Passwords do not match' });
+        }
 
         try {
             const pool = await connectDB();
@@ -60,6 +64,17 @@ const authController = {
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }
+    },
+    
+    logout: (req, res) => {
+        // Hủy session hiện tại
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({ message: "Error logging out" });
+            }
+            res.clearCookie('connect.sid'); // Xóa cookie session
+            return res.status(200).json({ message: "Logged out successfully" });
+        });
     },
 };
 
