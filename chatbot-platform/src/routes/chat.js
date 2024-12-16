@@ -1,5 +1,7 @@
 import express from 'express';
-import chatController from '../controllers/chatController.js';
+import { callGPT } from '../services/openaiService';
+import { callGemini } from '../services/geminiService';
+import { callClaude } from '../services/claudeService';
 
 const router = express.Router();
 
