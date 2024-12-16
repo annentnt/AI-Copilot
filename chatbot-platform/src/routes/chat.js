@@ -13,7 +13,7 @@ const chatController = {
             if (!message || !model) {
                 return res.status(400).json({ error: "Message and model are required" });
             }
-
+            
             let response;
             switch (model.toLowerCase()) {
                 case 'gpt':
