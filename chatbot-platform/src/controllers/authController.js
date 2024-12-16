@@ -6,6 +6,12 @@ const authController = {
     register: async (req, res) => {
         const { username, password, confirmPassword } = req.body;
 
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+            return res.status(400).json({ message: 'Password must contain at least one uppercase letter, one number, and one special character' });
+        }
+
         if (password !== confirmPassword) {
             return res.status(400).json({ message: 'Passwords do not match' });
         }
@@ -34,6 +40,8 @@ const authController = {
             res.status(201).json({ message: 'User registered successfully' });
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
+        } finally {
+            pool.close();
         }
     },
 

@@ -1,5 +1,5 @@
 // 20231211-sample.js
-const db = require('../database');
+import db from '../database';
 
 const seedUsers = async () => {
     const query = `
@@ -10,4 +10,4 @@ const seedUsers = async () => {
     console.log('Sample user data inserted');
 };
 
-module.exports = seedUsers;
+export default seedUsers;
