@@ -1,11 +1,12 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import connectDB from './database/database.js';
+import { connectDB, queryDatabase } from './database/database.js';
 
 dotenv.config(); // Load biến môi trường từ file .env
 
 const app = express();
 app.use(express.static('public'));
+app.use(express.json());
 
 // Kết nối cơ sở dữ liệu
 connectDB();
@@ -29,6 +30,16 @@ app.post('/api/register', (_, res) => {
 app.post('/api/login', (_, res) => {
     // Logic để đăng nhập người dùng
     res.json({ message: 'Đăng nhập thành công' });
+});
+
+app.get('/api/users', async (req, res) => {
+    try {
+        const query = 'SELECT * FROM Users'; // Câu lệnh SQL
+        const users = await queryDatabase(query); // Thực hiện query
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
 });
 
 // Server chạy

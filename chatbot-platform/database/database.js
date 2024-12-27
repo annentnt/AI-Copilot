@@ -1,4 +1,7 @@
 import sql from 'mssql';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const config = {
     user: process.env.DB_USER,
@@ -13,13 +16,22 @@ const config = {
 
 const connectDB = async () => {
     try {
-        const pool = await sql.connect(config);
-        console.log('SQL Server connected');
-        return pool;
-    } catch (error) {
-        console.error(`Error connecting to SQL Server: ${error.message}`);
-        process.exit(1);
+        await sql.connect(config);
+        console.log('Connected to SQL Server');
+    } catch (err) {
+        console.error('Error connecting to SQL Server:', err);
     }
 };
 
-export default connectDB;
+const queryDatabase = async (query) => {
+    try {
+        const result = await sql.query(query);
+        return result.recordset;
+    } catch (err) {
+        console.error('Error querying database:', err);
+        throw err;
+    }
+};
+
+// Export các hàm
+export { connectDB, queryDatabase };
