@@ -1,13 +1,13 @@
-const sql = require('mssql');
+import sql from 'mssql';
 
 const config = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    server: process.env.DB_SERVER, // Địa chỉ server
+    server: process.env.DB_SERVER,
     database: process.env.DB_NAME,
     options: {
-        encrypt: true, // Bật nếu sử dụng Azure
-        trustServerCertificate: true, // Chỉ bật nếu phát triển cục bộ
+        encrypt: true,
+        trustServerCertificate: true,
     },
 };
 
@@ -22,4 +22,4 @@ const connectDB = async () => {
     }
 };
 
-module.exports = connectDB;
+export default connectDB;
