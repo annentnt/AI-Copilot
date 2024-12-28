@@ -13,7 +13,7 @@ const chatController = {
                 return res.status(400).json({ error: "Valid chatbot is required" });
             }
 
-            let apiUrl;
+            let apiUrl = '';
             switch (chatbot) {
                 case 'chatgpt':
                     apiUrl = 'https://api.example.com/chatgpt';

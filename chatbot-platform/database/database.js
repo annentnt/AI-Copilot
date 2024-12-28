@@ -14,13 +14,14 @@ const config = {
     },
 };
 
-const connectDB = async () => {
-    try {
-        await sql.connect(config);
-        console.log('Connected to SQL Server');
-    } catch (err) {
-        console.error('Error connecting to SQL Server:', err);
-    }
+async function connectDB() {
+  try {
+    const pool = sql.connect(config);
+    console.log('Kết nối SQL Server thành công');
+    return pool;
+  } catch (err) {
+    console.error('Lỗi kết nối SQL Server:', err);
+  }
 };
 
 const queryDatabase = async (query) => {

@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors'; // Thêm thư viện cors
 import { connectDB, queryDatabase } from './database/database.js';
 
 dotenv.config(); // Load biến môi trường từ file .env
@@ -7,7 +8,7 @@ dotenv.config(); // Load biến môi trường từ file .env
 const app = express();
 app.use(express.static('public'));
 app.use(express.json());
-
+app.use(cors());
 // Kết nối cơ sở dữ liệu
 connectDB();
 
@@ -32,7 +33,7 @@ app.post('/api/login', (_, res) => {
     res.json({ message: 'Đăng nhập thành công' });
 });
 
-app.get('/api/users', async (req, res) => {
+app.get('/api/users', async (_, res) => {
     try {
         const query = 'SELECT * FROM Users'; // Câu lệnh SQL
         const users = await queryDatabase(query); // Thực hiện query
@@ -62,4 +63,12 @@ app.get('/api/chatbots/:id', (req, res) => {
 app.post('/api/chatbots/:id/chat', (req, res) => {
     // Logic để chat với chatbot
     res.json({ message: `Chat với chatbot với id ${req.params.id}` });
+});
+
+// Route để thử chat với chatbot trong giao diện backend
+app.post('/api/test-chat', (req, res) => {
+    const { message } = req.body;
+    // Logic để xử lý tin nhắn và trả lời từ chatbot
+    const responseMessage = `Chatbot trả lời: ${message}`;
+    res.json({ message: responseMessage });
 });
