@@ -1,37 +1,39 @@
-import sql from 'mssql';
+import sql from 'mssql/msnodesqlv8.js'; // Sử dụng msnodesqlv8 driver
 import dotenv from 'dotenv';
 
+// Nạp biến môi trường từ file .env
 dotenv.config();
 
+// Cấu hình kết nối SQL Server
 const config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    server: process.env.DB_SERVER,
-    database: process.env.DB_NAME,
-    options: {
-        encrypt: true,
-        trustServerCertificate: true,
-    },
+  driver: 'msnodesqlv8',
+  server: 'DANNO\\SQLEXPRESS01', // Thay bằng tên server của bạn
+  database: 'ChatbotPlatform',   // Tên database
+  options: {
+      encrypt: true,
+      trustServerCertificate: true,
+  },
 };
 
 async function connectDB() {
   try {
-    const pool = sql.connect(config);
+    const pool = sql.connect(config); // Kết nối SQL Server
     console.log('Kết nối SQL Server thành công');
     return pool;
   } catch (err) {
     console.error('Lỗi kết nối SQL Server:', err);
+    throw err;
   }
-};
+}
 
 const queryDatabase = async (query) => {
-    try {
-        const result = await sql.query(query);
-        return result.recordset;
-    } catch (err) {
-        console.error('Error querying database:', err);
-        throw err;
-    }
+  try {
+    const result = await sql.query(query); // Thực hiện truy vấn
+    return result.recordset; // Trả về dữ liệu
+  } catch (err) {
+    console.error('Error querying database:', err);
+    throw err;
+  }
 };
 
 // Export các hàm

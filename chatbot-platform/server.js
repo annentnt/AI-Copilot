@@ -9,12 +9,9 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.json());
 app.use(cors());
+
 // Kết nối cơ sở dữ liệu
 connectDB();
-
-// Middleware
-app.use(express.json());
-app.use(express.static('public')); // Phục vụ file tĩnh từ thư mục public
 
 // Định nghĩa route cơ bản
 app.get('/', (_, res) => {
@@ -22,15 +19,31 @@ app.get('/', (_, res) => {
 });
 
 // Route để đăng ký
-app.post('/api/register', (_, res) => {
-    // Logic để đăng ký người dùng mới
-    res.json({ message: 'Đăng ký thành công' });
+app.post('/api/register', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const query = 'INSERT INTO Users (username, password) VALUES (?, ?)';
+        await queryDatabase(query, [username, password]);
+        res.json({ message: 'Đăng ký thành công' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error registering user', error: error.message });
+    }
 });
 
 // Route để đăng nhập
-app.post('/api/login', (_, res) => {
-    // Logic để đăng nhập người dùng
-    res.json({ message: 'Đăng nhập thành công' });
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const query = 'SELECT * FROM Users WHERE username = ? AND password = ?';
+        const users = await queryDatabase(query, [username, password]);
+        if (users.length > 0) {
+            res.json({ message: 'Đăng nhập thành công' });
+        } else {
+            res.status(401).json({ message: 'Tên đăng nhập hoặc mật khẩu không đúng' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error logging in', error: error.message });
+    }
 });
 
 app.get('/api/users', async (_, res) => {
