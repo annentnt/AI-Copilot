@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "cors": "^2.8.5",
-    "msnodesqlv8": "^4.4.0"
-  }
-}
