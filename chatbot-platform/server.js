@@ -2,13 +2,23 @@ import express from 'express';
 import cors from 'cors';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+// Thiết lập __dirname cho ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 dotenv.config();
 
 
 const app = express();
-app.use(express.static('public'));
+//app.use(express.static('public'));
 app.use(express.json());
 app.use(cors());
+// Thêm middleware để phục vụ file tĩnh
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
 // Sau đó sử dụng
 //const client = new MongoClient(process.env.MONGODB_URI);
 
@@ -36,15 +46,56 @@ app.get('/', (_, res) => {
 });
 
 // Route for registration
+// app.post('/api/register', async (req, res) => {
+//     const { username, password } = req.body;
+//     try {
+//         const result = await usersCollection.insertOne({ username, password });
+//         res.json({ message: 'Registration successful', result });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error registering user', error: error.message });
+//     }
+// });
+// Cập nhật route đăng ký
+// Thêm route để serve file HTML
+
+// Thay đổi route này
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'views', 'login.html'));
+// });
+app.get(['/', '/login'], (req, res) => {
+    const filePath = path.join(__dirname, 'views', 'login.html');
+    console.log('Attempting to serve:', filePath);
+    
+    if (fs.existsSync(filePath)) {
+        res.sendFile(filePath);
+    } else {
+        res.status(404).send(`File not found at ${filePath}`);
+    }
+});
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
+});
 app.post('/api/register', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
     try {
-        const result = await usersCollection.insertOne({ username, password });
+        // Kiểm tra xem username đã tồn tại chưa
+        const existingUser = await usersCollection.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        const result = await usersCollection.insertOne({ 
+            username, 
+            password, 
+            email,
+            createdAt: new Date()
+        });
         res.json({ message: 'Registration successful', result });
     } catch (error) {
         res.status(500).json({ message: 'Error registering user', error: error.message });
     }
 });
+
 
 // Route for login
 app.post('/api/login', async (req, res) => {

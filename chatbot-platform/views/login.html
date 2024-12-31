@@ -269,7 +269,7 @@
         const registerTab = document.getElementById('register-tab');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
-
+    
         // Gắn sự kiện click cho nút Login
         loginTab.addEventListener('click', () => {
             loginTab.classList.add('active');
@@ -277,7 +277,7 @@
             loginForm.classList.add('active');
             registerForm.classList.remove('active');
         });
-
+    
         // Gắn sự kiện click cho nút Register
         registerTab.addEventListener('click', () => {
             registerTab.classList.add('active');
@@ -285,6 +285,78 @@
             registerForm.classList.add('active');
             loginForm.classList.remove('active');
         });
+    
+        // Trong phần <script> của file HTML
+        document.addEventListener('DOMContentLoaded', () => {
+            // Xử lý form đăng nhập
+            const loginFormElement = document.querySelector('#login-form form');
+            loginFormElement.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = loginFormElement.querySelector('input[type="text"]').value;
+                const password = loginFormElement.querySelector('input[type="password"]').value;
+    
+                try {
+                    const response = await fetch('http://localhost:3000/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, password }),
+                    });
+    
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Login successful!');
+                        // Chuyển hướng đến trang dashboard sau khi đăng nhập thành công
+                        window.location.href = '/dashboard.html';
+                    } else {
+                        alert(data.message || 'Login failed');
+                    }
+                } catch (error) {
+                    alert('Error during login');
+                    console.error('Login error:', error);
+                }
+            });
+    
+            // Xử lý form đăng ký
+            const registerFormElement = document.querySelector('#register-form form');
+            registerFormElement.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = registerFormElement.querySelector('input[type="text"]').value;
+                const password = registerFormElement.querySelector('input[type="password"]').value;
+                const email = registerFormElement.querySelector('input[type="email"]').value;
+                const confirmPassword = registerFormElement.querySelectorAll('input[type="password"]')[1].value;
+    
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+    
+                try {
+                    const response = await fetch('http://localhost:3000/api/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, password, email }),
+                    });
+    
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('Registration successful! Please login.');
+                        // Chuyển về tab login sau khi đăng ký thành công
+                        document.getElementById('login-tab').click();
+                    } else {
+                        alert(data.message || 'Registration failed');
+                    }
+                } catch (error) {
+                    alert('Error during registration');
+                    console.error('Registration error:', error);
+                }
+            });
+        });
+    
+    
     </script>
 </body>
 </html>
