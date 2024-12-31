@@ -1,13 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const app = express();
 app.use(express.static('public'));
 app.use(express.json());
 app.use(cors());
+// Sau đó sử dụng
+//const client = new MongoClient(process.env.MONGODB_URI);
 
-const client = new MongoClient('mongodb://chatbot-platform', { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient('mongodb://localhost:27017', { useNewUrlParser: true, useUnifiedTopology: true });
 // const db = 'admnin'; // This line is not needed and should be removed
 async function connectDB() {
     try {
