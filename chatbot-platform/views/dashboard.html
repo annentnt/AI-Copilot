@@ -20,7 +20,7 @@
             display: flex;
             height: 100%;
             width: 100%;
-            align-items: stretch; /* Đảm bảo các phần tử không bị lệch */
+            align-items: stretch;
         }
 
         /* Sidebar */
@@ -73,7 +73,8 @@
             display: flex;
             flex-direction: column;
             background-color: #e6f7e5;
-            height: 100%; /* Đảm bảo chat section chiếm hết chiều cao */
+            height: 100%;
+            padding: 20px;
         }
 
         .chat-header {
@@ -127,11 +128,15 @@
             padding: 20px;
             background-color: #fff;
             margin-bottom: 10px;
+            max-height: 70vh;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .chat-message {
             margin-bottom: 15px;
             display: flex;
+            align-items: center;
         }
 
         .chat-message.user {
@@ -171,6 +176,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 1em;
+            max-width: 70%;
         }
 
         .chat-send-button {
@@ -195,6 +201,7 @@
             background-color: white;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
@@ -258,7 +265,6 @@
             }
         });
 
-        // Logout logic
         document.getElementById("logout-link").addEventListener("click", function (e) {
             e.preventDefault();
             fetch('/api/logout', {
@@ -278,31 +284,76 @@
             });
         });
 
-        // Send message logic
-        function sendMessage() {
+        // Hàm để thêm tin nhắn vào giao diện
+        function addMessage(message, isUser = true) {
+            const chatBody = document.getElementById("chat-body");
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("chat-message", isUser ? "user" : "bot");
+            messageDiv.innerHTML = `<div class="message-content">${message}</div>`;
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Hàm để gửi tin nhắn và nhận phản hồi từ chatbot
+        async function sendMessage() {
             const chatInput = document.getElementById("chat-input");
             const message = chatInput.value.trim();
             if (message === "") return;
 
-            const chatBody = document.getElementById("chat-body");
-            const userMessage = document.createElement("div");
-            userMessage.classList.add("chat-message", "user");
-            userMessage.innerHTML = `<div class="message-content">${message}</div>`;
-            chatBody.appendChild(userMessage);
+            // Hiển thị tin nhắn người dùng
+            addMessage(message, true);
 
+            // Xóa input
             chatInput.value = "";
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
 
-        document.getElementById("send-button").addEventListener("click", sendMessage);
+            try {
+                // Thêm loading indicator
+                const loadingDiv = document.createElement("div");
+                loadingDiv.classList.add("chat-message", "bot");
+                loadingDiv.innerHTML = '<div class="message-content">Đang trả lời...</div>';
+                document.getElementById("chat-body").appendChild(loadingDiv);
 
-        document.getElementById("chat-input").addEventListener("keypress", function (e) {
-            if (e.key === "Enter") {
-                sendMessage();
+                // Gửi tin nhắn đến server
+                const response = await fetch('/api/chatbots/1/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                // Xóa loading indicator
+                loadingDiv.remove();
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                
+                // Hiển thị phản hồi từ chatbot
+                addMessage(data.message, false);
+            } catch (error) {
+                console.error('Error:', error);
+                // Xóa loading indicator nếu có lỗi
+                if (loadingDiv) loadingDiv.remove();
+                // Hiển thị thông báo lỗi
+                addMessage("Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.", false);
             }
-        });
-    </script>
-    <script src="/js/chat.js"></script>
+
+}
+
+// Thêm sự kiện cho nút gửi tin nhắn
+document.getElementById("send-button").addEventListener("click", sendMessage);
+
+// Thêm sự kiện cho việc nhấn Enter để gửi tin nhắn
+document.getElementById("chat-input").addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+        sendMessage();
+    }
+});
+
+</script>
 </body>
 
 </html>
