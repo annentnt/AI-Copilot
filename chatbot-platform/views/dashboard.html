@@ -225,8 +225,8 @@
                 </div>
             </div>
 
-            <div class="chat-body">
-                <div class="chat-message bot">
+            <div class="chat-body" id="chat-body"></div>
+                <!-- <div class="chat-message bot">
                     <div class="message-content">Hello! How can I assist you today?</div>
                 </div>
                 <div class="chat-message user">
@@ -234,7 +234,7 @@
                 </div>
                 <div class="chat-message bot">
                     <div class="message-content">AI trends include advancements in natural language processing, computer vision, and ethical AI considerations. Would you like more details?</div>
-                </div>
+                </div> -->
             </div>
 
             <div class="chat-input-section">
@@ -246,8 +246,8 @@
                         <option value="GPT-4o mini">GPT-4o mini</option>
                     </select>
                 </div>
-                <input type="text" class="chat-input" placeholder="Type your message...">
-                <button class="chat-send-button">Send</button>
+                <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
+                <button class="chat-send-button" id="send-button">Send</button>
             </div>
         </div>
     </div>
@@ -284,9 +284,32 @@
                 alert('Logout failed.');
             });
         });
+
+        // Send message logic
+        function sendMessage() {
+            const chatInput = document.getElementById("chat-input");
+            const message = chatInput.value.trim();
+            if (message === "") return;
+
+            const chatBody = document.getElementById("chat-body");
+            const userMessage = document.createElement("div");
+            userMessage.classList.add("chat-message", "user");
+            userMessage.innerHTML = `<div class="message-content">${message}</div>`;
+            chatBody.appendChild(userMessage);
+
+            chatInput.value = "";
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        document.getElementById("send-button").addEventListener("click", sendMessage);
+
+        document.getElementById("chat-input").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
     </script>
     <script src="/js/chat.js"></script>
 </body>
 
 </html>
-
