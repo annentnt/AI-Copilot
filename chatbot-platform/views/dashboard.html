@@ -354,6 +354,25 @@ document.getElementById("chat-input").addEventListener("keypress", function (eve
 });
 
 </script>
+
+<script>
+    // Thêm sự kiện cho nút New Chat
+    document.querySelector('.sidebar .menu a:nth-child(1)').addEventListener('click', function() {
+        // Làm mới khu vực chat (xóa các tin nhắn cũ)
+        document.getElementById('chat-body').innerHTML = '';
+    });
+
+    // Hàm để thêm tin nhắn vào giao diện
+    function addMessage(message, isUser = true) {
+        const chatBody = document.getElementById("chat-body");
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("chat-message", isUser ? "user" : "bot");
+        messageDiv.innerHTML = `<div class="message-content">${message}</div>`;
+        chatBody.appendChild(messageDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+</script>
+
 </body>
 
 </html>
