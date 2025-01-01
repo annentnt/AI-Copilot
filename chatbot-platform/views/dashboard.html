@@ -117,6 +117,42 @@
 
         .dropdown-menu a:hover {
             background-color: #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .avatar-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .avatar-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
         }
 
         .chat-body {
@@ -228,11 +264,14 @@
             <div class="chat-body">
                 <div class="chat-message bot">
                     <div class="message-content">Hello! How can I assist you today?</div>
+                    <div class="message-content">Hello! How can I assist you today?</div>
                 </div>
                 <div class="chat-message user">
                     <div class="message-content">What are the latest AI trends?</div>
+                    <div class="message-content">What are the latest AI trends?</div>
                 </div>
                 <div class="chat-message bot">
+                    <div class="message-content">AI trends include advancements in natural language processing, computer vision, and ethical AI considerations. Would you like more details?</div>
                     <div class="message-content">AI trends include advancements in natural language processing, computer vision, and ethical AI considerations. Would you like more details?</div>
                 </div>
             </div>
@@ -289,3 +328,4 @@
 </body>
 
 </html>
+
