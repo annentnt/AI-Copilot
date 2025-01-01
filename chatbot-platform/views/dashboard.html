@@ -81,6 +81,42 @@
             text-align: center;
             font-size: 1.2em;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .avatar-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .avatar-container img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            display: none;
+            z-index: 10;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
         }
 
         .chat-body {
@@ -136,7 +172,6 @@
 
         .chat-send-button {
             background-color: #007f00;
-            /* Green color similar to the Login button */
             color: white;
             border: none;
             padding: 10px 20px;
@@ -146,12 +181,6 @@
 
         .chat-send-button:hover {
             background-color: #005f00;
-            /* Darker green when hovered */
-        }
-
-
-        .model-selector {
-            position: relative;
         }
 
         .model-selector select {
@@ -185,35 +214,30 @@
 
         <!-- Chat Section -->
         <div class="chat-section">
-            <!-- Header -->
             <div class="chat-header">
                 ChatGPT - AIChat PR
+                <div class="avatar-container" id="avatar-btn">
+                    <img src="../public/images/avatar.png" alt="User Avatar">
+                    <div class="dropdown-menu" id="dropdown-menu">
+                        <a href="#">Profile</a>
+                        <a href="#">Log out</a>
+                    </div>
+                </div>
             </div>
 
-            <!-- Chat Body -->
             <div class="chat-body">
-                <!-- Example Messages -->
                 <div class="chat-message bot">
-                    <div class="message-content">
-                        Hello! How can I assist you today?
-                    </div>
+                    <div class="message-content">Hello! How can I assist you today?</div>
                 </div>
                 <div class="chat-message user">
-                    <div class="message-content">
-                        What are the latest AI trends?
-                    </div>
+                    <div class="message-content">What are the latest AI trends?</div>
                 </div>
                 <div class="chat-message bot">
-                    <div class="message-content">
-                        AI trends include advancements in natural language processing, computer vision, and ethical AI
-                        considerations. Would you like more details?
-                    </div>
+                    <div class="message-content">AI trends include advancements in natural language processing, computer vision, and ethical AI considerations. Would you like more details?</div>
                 </div>
             </div>
 
-            <!-- Chat Input -->
             <div class="chat-input-section">
-                <!-- Model Selector -->
                 <div class="model-selector">
                     <select>
                         <option value="gpt-4o">GPT-4o</option>
@@ -222,15 +246,25 @@
                         <option value="GPT-4o mini">GPT-4o mini</option>
                     </select>
                 </div>
-
-                <!-- Input Box -->
                 <input type="text" class="chat-input" placeholder="Type your message...">
-
-                <!-- Send Button -->
                 <button class="chat-send-button">Send</button>
             </div>
         </div>
     </div>
+
+    <script>
+        // Dropdown toggle logic
+        document.getElementById("avatar-btn").addEventListener("click", function () {
+            const dropdownMenu = document.getElementById("dropdown-menu");
+            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+        });
+
+        window.addEventListener("click", function (e) {
+            if (!e.target.closest(".avatar-container")) {
+                document.getElementById("dropdown-menu").style.display = "none";
+            }
+        });
+    </script>
     <script src="/js/chat.js"></script>
 </body>
 
