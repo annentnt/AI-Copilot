@@ -17,12 +17,7 @@ app.use(cors());
 // Thêm middleware để phục vụ file tĩnh
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views')));
-// Sau đó sử dụng
-//const client = new MongoClient(process.env.MONGODB_URI);
 
-// const claude = new Anthropic({
-//     apiKey: process.env.CLAUDE_API_KEY,// Make sure this is set in .env
-// });
 // Khởi tạo Anthropic client
 const anthropic = new Anthropic({
     apiKey: process.env.CLAUDE_API_KEY,
@@ -54,23 +49,7 @@ app.get('/', (_, res) => {
     res.send('Welcome to Chatbot Platform!');
 });
 
-// Route for registration
-// app.post('/api/register', async (req, res) => {
-//     const { username, password } = req.body;
-//     try {
-//         const result = await usersCollection.insertOne({ username, password });
-//         res.json({ message: 'Registration successful', result });
-//     } catch (error) {
-//         res.status(500).json({ message: 'Error registering user', error: error.message });
-//     }
-// });
-// Cập nhật route đăng ký
-// Thêm route để serve file HTML
 
-// Thay đổi route này
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'views', 'login.html'));
-// });
 app.get(['/', '/login'], (req, res) => {
     const filePath = path.join(__dirname, 'views', 'login.html');
     console.log('Attempting to serve:', filePath);
