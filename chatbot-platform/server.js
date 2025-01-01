@@ -231,3 +231,14 @@ async function processMessage(chatbotId, message) {
     // This could include calling different AI APIs based on the chatbot type
     return `Processed response for chatbot ${chatbotId}: ${message}`;
 }
+
+app.post('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).send('Failed to logout');
+        }
+        res.clearCookie('connect.sid'); // Xóa cookie session
+        res.status(200).send('Logout successful');
+    });
+});
